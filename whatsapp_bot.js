@@ -312,7 +312,7 @@ class WhatsAppModerationBot {
                 break;
                 
             case 'APPROVE':
-                console.log(`✅ הודעה אושרה: ${messageData.content.substring(0, 30)}...`);
+                console.log(`✅ Message approved: ${messageData.content.substring(0, 30)}...`);
                 // Check if it's a media content warning
                 if (this.needsMediaWarning(messageData.content)) {
                     await this.sendMediaWarning(message);
@@ -320,7 +320,7 @@ class WhatsAppModerationBot {
                 break;
                 
             default:
-                console.log(`❓ פעולה לא ידועה: ${result.action}`);
+                console.log(`❓Unknown Action: ${result.action}`);
         }
     }
     
@@ -328,7 +328,7 @@ class WhatsAppModerationBot {
         try {
             // Try to delete the message
             await message.delete(true);
-            console.log(`🗑️ הודעה נמחקה: ${message.body?.substring(0, 30)}...`);
+            console.log(`🗑️ Message was deleted: ${message.body?.substring(0, 30)}...`);
             
             // Notify admins
             const notificationMsg = `🚨 **הודעה נמחקה אוטומטית**
