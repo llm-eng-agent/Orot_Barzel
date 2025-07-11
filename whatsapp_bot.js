@@ -499,7 +499,7 @@ class WhatsAppModerationBot {
 💡 **תזכורת לחברים החדשים:**
 • קראו את תקנון הקבוצה
 • היו זהירים עם שיתוף מידע רגיש
-• לידיעתכם - בוט מפקח על ההודעות לביטחון
+• לידיעתכם -ישנו בוט המפקח על ההודעות 
 
 🤖 הבוט יתחיל לפקח על הודעותיהם`;
 
@@ -534,7 +534,7 @@ class WhatsAppModerationBot {
     
     async sendMediaWarning(message) {
         try {
-            await message.reply('🔔 *תזכורת אוטומטית:* נא לשים לב לתוכן המדיה שמשותף ולמיקום הצילום');
+            await message.reply('🔔 *תזכורת אוטומטית:*נא לשים לב לתוכן המדיה שמשותף ולמיקום הצילום');
             console.log('נשלחה תזכורת מדיה');
         } catch (error) {
             console.error('❌ נכשל בשליחת תזכורת מדיה:', error);
@@ -577,20 +577,20 @@ class WhatsAppModerationBot {
                         const reportMsg = this.generateDailyReport(stats);
                         this.notifyAdmins(reportMsg);
                     } catch (e) {
-                        console.error('❌ שגיאה בפרסור סטטיסטיקות:', e);
+                        console.error('Error in parsing statistics:', e);
                     }
                 }
             });
             
         } catch (error) {
-            console.error('❌ שגיאה בדוח יומי:', error);
+            console.error('Error in daily report', error);
         }
     }
     
     generateDailyReport(stats) {
         return `**דוח יומי - סוכן חמ"ל**
 
-📈 **סטטיסטיקות היום:**
+**סטטיסטיקות היום:**
 • 📨 הודעות שנותחו: ${stats.daily_messages || 0}
 • ✅ הודעות שאושרו: ${stats.approved || 0}
 • ⚠️ הודעות שסומנו: ${stats.flagged || 0}
@@ -607,22 +607,22 @@ class WhatsAppModerationBot {
 📅 **תאריך:** ${new Date().toLocaleDateString('he-IL')}
 🕐 **זמן:** ${new Date().toLocaleTimeString('he-IL')}
 
-🤖 הסוכן ממשיך ללמוד ולהשתפר!`;
+🤖 ינעל שורלוק הסוכן ממשיך להשתפר!`;
     }
     
     async start() {
-        console.log('🚀 מפעיל את WhatsApp Moderation Bot...');
+        console.log('מפעיל את WhatsApp Moderation Bot...');
         await this.client.initialize();
         
         // Schedule daily report (every day at 08:00)
         setInterval(() => {
             const now = new Date();
-            if (now.getHours() === 8 && now.getMinutes() === 0) {
+            if (now.getHours() === 20 && now.getMinutes() === 0) {
                 this.sendDailyReport();
             }
         }, 60000); // Check every minute
         
-        console.log('📅 דוח יומי מתוזמן ל-08:00');
+        console.log('עדכון יומי מתוזמן ל-20:00');
     }
     
     async stop() {
