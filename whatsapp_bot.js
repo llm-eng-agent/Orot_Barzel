@@ -17,7 +17,7 @@ class WhatsAppModerationBot {
     }
     
     setupClient() {
-        console.log('🤖 מאתחל WhatsApp Bot...');
+        console.log('🤖 Uploading WhatsApp Bot...');
         
         this.client = new Client({
             authStrategy: new LocalAuth({

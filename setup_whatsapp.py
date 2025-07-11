@@ -9,43 +9,43 @@ from pathlib import Path
 
 def check_requirements():
     """Check if all requirements are met"""
-    print("🔍 בודק דרישות מערכת...")
+    print("🔍 Check if all requirements are met")
     
     # Check Python version
     python_version = sys.version_info
     if python_version < (3, 8):
-        print(f"❌ נדרש Python 3.8+. גרסה נוכחית: {python_version.major}.{python_version.minor}")
+        print(f"❌ Need Python 3.8+. current version is: {python_version.major}.{python_version.minor}")
         return False
     
-    print(f"✅ Python {python_version.major}.{python_version.minor} מתאים")
+    print(f"✅ Python {python_version.major}.{python_version.minor} fits the requirement")
     
     # Check Node.js
     try:
         result = subprocess.run(['node', '--version'], capture_output=True, text=True)
         if result.returncode == 0:
             version = result.stdout.strip()
-            print(f"✅ Node.js {version} מותקן")
+            print(f"✅ Node.js {version} installed")
         else:
-            print("❌ Node.js לא מותקן")
+            print("❌ Node.js not installed")
             return False
     except FileNotFoundError:
-        print("❌ Node.js לא מותקן")
+        print("❌ Node.js not found")
         return False
     
     # Check environment variables
     groq_key = os.getenv('GROQ_API_KEY')
     if not groq_key:
-        print("❌ GROQ_API_KEY לא מוגדר")
-        print("הגדר עם: export GROQ_API_KEY='your_key_here'")
+        print("❌ GROQ_API_KEY not set")
+        print(" Set like this: export GROQ_API_KEY='your_key_here'")
         return False
     
-    print("✅ GROQ_API_KEY מוגדר")
+    print("✅ GROQ_API_KEY is set")
     
     return True
 
 def install_dependencies():
     """Install required dependencies"""
-    print("📦 מתקין תלויות...")
+    print("📦Install required dependencies...")
     
     # Python dependencies
     python_deps = [
@@ -58,9 +58,9 @@ def install_dependencies():
         try:
             subprocess.run([sys.executable, '-m', 'pip', 'install', dep], 
                          check=True, capture_output=True)
-            print(f"✅ {dep} הותקן")
+            print(f"✅ {dep} installed successfully")
         except subprocess.CalledProcessError as e:
-            print(f"❌ נכשל בהתקנת {dep}: {e}")
+            print(f"❌ Failed to install {dep}: {e}")
             return False
     
     # Node.js dependencies
@@ -87,14 +87,14 @@ def install_dependencies():
         with open('package.json', 'w', encoding='utf-8') as f:
             json.dump(package_json, f, indent=2, ensure_ascii=False)
         
-        print("✅ package.json נוצר")
+        print("✅ package.json created")
     
     # Install Node.js dependencies
     try:
         subprocess.run(['npm', 'install'], check=True, capture_output=True)
-        print("✅ Node.js dependencies הותקנו")
+        print("✅ Node.js dependencies installed successfully")
     except subprocess.CalledProcessError as e:
-        print(f"❌ נכשל בהתקנת Node.js dependencies: {e}")
+        print(f"❌ Faild install Node.js dependencies: {e}")
         return False
     
     return True
@@ -104,23 +104,23 @@ def create_startup_script():
     startup_script = """#!/bin/bash
 # start_whatsapp_bot.sh
 
-echo "🚀 מפעיל WhatsApp Moderation Bot..."
+echo "⬆️ Uploading WhatsApp Moderation Bot..."
 
 # Check environment
 if [ -z "$GROQ_API_KEY" ]; then
-    echo "❌ GROQ_API_KEY לא מוגדר"
-    echo "הגדר עם: export GROQ_API_KEY='your_key'"
+    echo "❌ GROQ_API_KEY not set"
+    echo "Set it with: export GROQ_API_KEY='your_key'"
     exit 1
 fi
 
 # Check Python moderation agent
 if [ ! -f "llm_moderation_agent.py" ]; then
-    echo "❌ llm_moderation_agent.py לא נמצא"
+    echo "❌ llm_moderation_agent.py not found"
     exit 1
 fi
 
 # Start the bot
-echo "🤖 מפעיל את הbот..."
+echo "🤖 Starting bот..."
 node whatsapp_bot.js
 """
     
@@ -130,7 +130,7 @@ node whatsapp_bot.js
     # Make executable
     os.chmod('start_whatsapp_bot.sh', 0o755)
     
-    print("✅ startup script נוצר")
+    print("✅ startup script created: start_whatsapp_bot.sh")
 
 def create_config_files():
     """Create configuration files"""
@@ -143,43 +143,43 @@ GROQ_API_KEY=your_groq_api_key_here
 
 # Optional settings
 WHATSAPP_SESSION_NAME=orot-barzel-moderation
-TARGET_GROUP_NAME=אורות ברזל
+TARGET_GROUP_NAME=אורות ברזל התנדבויות ועזרה 🇮🇱❤️
 LOG_LEVEL=INFO
 """
     
     with open('.env.example', 'w', encoding='utf-8') as f:
         f.write(env_template)
     
-    print("✅ .env.example נוצר")
+    print("✅ .env.example created")
     
     # Create logs directory
     Path('logs').mkdir(exist_ok=True)
-    print("✅ תיקיית logs נוצרה")
+    print("✅ Logs file created in 'logs' directory")
 
 def main():
     """Main setup function"""
-    print("🛠️ מתחיל התקנת WhatsApp Moderation Bot...")
+    print("🛠️ Starting installing WhatsApp Moderation Bot...")
     print("="*50)
     
     if not check_requirements():
-        print("\n❌ יש בעיות בדרישות המערכת")
+        print("\n❌ Failed to meet all requirements")
         return False
     
     if not install_dependencies():
-        print("\n❌ נכשל בהתקנת תלויות")
+        print("\n❌ Failed to install dependencies")
         return False
     
     create_startup_script()
     create_config_files()
     
     print("\n" + "="*50)
-    print("🎉 ההתקנה הושלמה בהצלחה!")
-    print("\nשלבים הבאים:")
-    print("1. וודא ש-GROQ_API_KEY מוגדר: export GROQ_API_KEY='your_key'")
-    print("2. וודא שקובץ llm_moderation_agent.py קיים")
-    print("3. הרץ: ./start_whatsapp_bot.sh")
-    print("4. סרוק QR code בWhatsApp")
-    print("\n🤖 הבוט יתחיל לפקח על הקבוצה!")
+    print("🎉 Installation completed successfully!")
+    print("\nNext steps:")
+    print("1. Make sure that GROQ_API_KEY defined: export GROQ_API_KEY='your_key'")
+    print("2. Aprove the file llm_moderation_agent.py exsits")
+    print("3. Run: ./start_whatsapp_bot.sh")
+    print("4. Scan QR code with WhatsApp")
+    print("\n🤖 The bot has started monitoring the group!")
     
     return True
 
