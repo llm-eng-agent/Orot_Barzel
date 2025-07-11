@@ -1,0 +1,21 @@
+{
+  "name": "whatsapp-moderation-bot",
+  "version": "1.0.0",
+  "description": "WhatsApp moderation bot for Orot Barzel",
+  "main": "whatsapp_bot.js",
+  "scripts": {
+    "start": "node whatsapp_bot.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "dependencies": {
+    "whatsapp-web.js": "^1.21.0",
+    "qrcode-terminal": "^0.12.0"
+  },
+  "keywords": [
+    "whatsapp",
+    "moderation",
+    "bot"
+  ],
+  "author": "Orot Barzel Team",
+  "license": "MIT"
+}
