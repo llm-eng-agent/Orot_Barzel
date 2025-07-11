@@ -44,14 +44,14 @@ class WhatsAppModerationBot {
     setupEventHandlers() {
         // QR Code for initial connection
         this.client.on('qr', (qr) => {
-            console.log('סרוק את קוד ה-QR עם WhatsApp:');
+            console.log('Scan QR with WhatsApp:');
             qrcode.generate(qr, { small: true });
-            console.log('מחכה לסריקה...');
+            console.log('Waitting for scanning ...');
         });
         
         // Client ready
         this.client.on('ready', async () => {
-            console.log('✅ WhatsApp Bot מוכן לפעולה!');
+            console.log('✅ WhatsApp Bot Ready for action!!');
             await this.initializeGroup();
             await this.sendStartupMessage();
         });
@@ -78,19 +78,19 @@ class WhatsAppModerationBot {
         
         // Disconnection
         this.client.on('disconnected', (reason) => {
-            console.log('❌ WhatsApp התנתק:', reason);
-            console.log('🔄 מנסה להתחבר מחדש...');
+            console.log('❌ WhatsApp Disconnected:', reason);
+            console.log('🔄 Trying to reconnect...');
         });
         
         // Authentication failure
         this.client.on('auth_failure', (msg) => {
-            console.error('❌ כשל באימות:', msg);
+            console.error('❌ Authentication failure:', msg);
         });
     }
     
     async initializeGroup() {
         try {
-            console.log(`מחפש קבוצה: "${this.targetGroupName}"`);
+            console.log(`Searching group: "${this.targetGroupName}"`);
             
             const chats = await this.client.getChats();
             const targetGroup = chats.find(chat => 
@@ -125,8 +125,8 @@ class WhatsAppModerationBot {
                 console.log(`חברים רגילים: ${this.allMembers.size - this.adminIds.size}`);
                 
             } else {
-                console.log(`❌ לא נמצאה קבוצה עם השם "${this.targetGroupName}"`);
-                console.log('קבוצות זמינות:');
+                console.log(`❌ No group found with the name"${this.targetGroupName}"`);
+                console.log('Availability groups:');
                 chats.filter(chat => chat.isGroup).forEach(chat => {
                     console.log(`  - ${chat.name}`);
                 });
@@ -142,7 +142,7 @@ class WhatsAppModerationBot {
 
 ✅ מחובר לקבוצת: ${this.targetGroupName}
 👥 מפקח על ${this.allMembers.size} חברים (כולל ${this.adminIds.size} מנהלים)
-🧠 מופעל על ידי LLM מתקדם
+
 
 **איך זה עובד:**
 • הסוכן בודק את כל ההודעות
@@ -416,7 +416,7 @@ class WhatsAppModerationBot {
             this.pendingReviews.delete(messageId);
             
         } catch (error) {
-            console.error('❌ שגיאה בטיפול בתגובה:', error);
+            console.error('❌ שגיאה בטיפול התגובה:', error);
         }
     }
     
@@ -611,7 +611,7 @@ class WhatsAppModerationBot {
     }
     
     async start() {
-        console.log('מפעיל את WhatsApp Moderation Bot...');
+        console.log('⬆️ Uploading WhatsApp Moderation Bot...');
         await this.client.initialize();
         
         // Schedule daily report (every day at 08:00)
@@ -622,11 +622,11 @@ class WhatsAppModerationBot {
             }
         }, 60000); // Check every minute
         
-        console.log('עדכון יומי מתוזמן ל-20:00');
+        console.log('📅 Daily update set to 20:00');
     }
     
     async stop() {
-        console.log('🛑 עוצר את WhatsApp Bot...');
+        console.log('🛑Stopping WhatsApp Bot...');
         await this.client.destroy();
     }
     
@@ -644,7 +644,7 @@ class WhatsAppModerationBot {
                 description: group.description
             };
         } catch (error) {
-            console.error('❌ שגיאה בקבלת מידע קבוצה:', error);
+            console.error('❌ Error reciving info in the group:', error);
             return null;
         }
     }
@@ -668,11 +668,11 @@ class WhatsAppModerationBot {
                 }
             }
             
-            console.log(`🔄 רשימת חברים מרועננת: ${this.allMembers.size} חברים, ${this.adminIds.size} מנהלים`);
+            console.log(`🔄 Members list is up-to-date: ${this.allMembers.size} Friends, ${this.adminIds.size} Admins`);
             return true;
             
         } catch (error) {
-            console.error('❌ שגיאה ברענון רשימת חברים:', error);
+            console.error('❌ Error refreshing members list:', error);
             return false;
         }
     }
@@ -690,16 +690,16 @@ if (require.main === module) {
     
     // Graceful shutdown
     process.on('SIGINT', async () => {
-        console.log('\n🛑 מקבל אות סגירה...');
+        console.log('\n🛑 Shutting down');
         await bot.stop();
         process.exit(0);
     });
     
     process.on('uncaughtException', (error) => {
-        console.error('❌ שגיאה לא צפויה:', error);
+        console.error('❌ Unexpected error:', error);
     });
     
     process.on('unhandledRejection', (reason, promise) => {
-        console.error('❌ Promise לא טופל:', reason);
+        console.error('❌ Promise not handled:  :', reason);
     });
 }
