@@ -111,18 +111,18 @@ class WhatsAppModerationBot {
                     // Separately track admins
                     if (participant.isAdmin || participant.isSuperAdmin) {
                         this.adminIds.add(participant.id._serialized);
-                        console.log(`👤 מנהל זוהה: ${participant.id.user}`);
+                        console.log(`👤 Admin identified: ${participant.id.user}`);
                     } else {
-                        console.log(`👥 חבר זוהה: ${participant.id.user}`);
+                        console.log(`👥 Member identified: ${participant.id.user}`);
                     }
                 }
                 
-                console.log(`✅ זוהו ${this.allMembers.size} חברים כולל ${this.adminIds.size} מנהלים`);
+                console.log(`✅ identified ${this.allMembers.size} Members including ${this.adminIds.size} Admins`);
                 
                 // Debug: Print member counts
-                console.log(`סה"כ חברים: ${this.allMembers.size}`);
-                console.log(`מנהלים: ${this.adminIds.size}`);
-                console.log(`חברים רגילים: ${this.allMembers.size - this.adminIds.size}`);
+                console.log(`Total Members: ${this.allMembers.size}`);
+                console.log(`Admins: ${this.adminIds.size}`);
+                console.log(`Members: ${this.allMembers.size - this.adminIds.size}`);
                 
             } else {
                 console.log(`❌ No group found with the name"${this.targetGroupName}"`);
@@ -132,7 +132,7 @@ class WhatsAppModerationBot {
                 });
             }
         } catch (error) {
-            console.error('❌ שגיאה באתחול הקבוצה:', error);
+            console.error('❌ Error initializing group::', error);
         }
     }
     
