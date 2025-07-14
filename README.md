@@ -114,16 +114,16 @@ node whatsapp_bot.js
 
 ```
 whatsapp-moderation-bot/
-├── 📄 whatsapp_bot.js          # הבוט הראשי
-├── 🐍 llm_moderation_agent.py  # סוכן החמל
-├── 🐍 moderation_api.py        # API גשר
-├── 🐍 process_feedback.py      # עיבוד פידבק
-├── 🐍 setup_whatsapp.py        # סקריפט התקנה
-├── 📋 package.json             # תלויות Node.js
-├── 📋 requirements.txt         # תלויות Python
-├── 🗃️ moderation.db           # מסד נתונים מקומי
-├── 📁 logs/                   # קבצי לוג
-└── 📁 .wwebjs_auth/           # נתוני אימות WhatsApp
+├──  whatsapp_bot.js          # הבוט הראשי
+├──  llm_moderation_agent.py  # סוכן החמל
+├──  moderation_api.py        # API גשר
+├──  process_feedback.py      # עיבוד פידבק
+├──  setup_whatsapp.py        # סקריפט התקנה
+├──  package.json             # תלויות Node.js
+├──  requirements.txt         # תלויות Python
+├──  moderation.db           # מסד נתונים מקומי
+├──  logs/                   # קבצי לוג
+└──  .wwebjs_auth/           # נתוני אימות WhatsApp
 ```
 
 ---
