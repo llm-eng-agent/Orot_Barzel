@@ -173,7 +173,7 @@ def main():
     create_config_files()
     
     print("\n" + "="*50)
-    print("🎉 Installation completed successfully!")
+    print("Installation completed successfully!")
     print("\nNext steps:")
     print("1. Make sure that GROQ_API_KEY defined: export GROQ_API_KEY='your_key'")
     print("2. Aprove the file llm_moderation_agent.py exsits")

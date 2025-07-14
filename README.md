@@ -110,7 +110,7 @@ node whatsapp_bot.js
 
 ---
 
-## 📂 מבנה הפרויקט
+##  מבנה הפרויקט
 
 ```
 whatsapp-moderation-bot/
