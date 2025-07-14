@@ -17,7 +17,7 @@ class WhatsAppModerationBot {
     }
     
     setupClient() {
-        console.log('🤖 Uploading WhatsApp Bot...');
+        console.log('Uploading WhatsApp Bot...');
         
         this.client = new Client({
             authStrategy: new LocalAuth({
@@ -293,7 +293,7 @@ class WhatsAppModerationBot {
             // Timeout after 15 seconds
             setTimeout(() => {
                 pythonProcess.kill();
-                console.log('⏱️ Python process timeout');
+                console.log('Python process timeout');
                 resolve(null);
             }, 15000);
         });
@@ -328,7 +328,7 @@ class WhatsAppModerationBot {
         try {
             // Try to delete the message
             await message.delete(true);
-            console.log(`🗑️ Message was deleted: ${message.body?.substring(0, 30)}...`);
+            console.log(`Message was deleted: ${message.body?.substring(0, 30)}...`);
             
             // Notify admins
             const notificationMsg = `🚨 **הודעה נמחקה אוטומטית**
@@ -346,7 +346,7 @@ class WhatsAppModerationBot {
             await this.notifyAdmins(notificationMsg);
             
         } catch (error) {
-            console.error('❌ נכשל במחיקת הודעה:', error);
+            console.error('נכשל במחיקת הודעה:', error);
             
             // If delete failed, flag for manual review
             await this.flagForReview(message, {
@@ -367,7 +367,7 @@ class WhatsAppModerationBot {
             timestamp: new Date()
         });
         
-        const reviewMsg = `⚠️ **הודעה מסומנת לבדיקה**
+        const reviewMsg = `**הודעה מסומנת לבדיקה**
 
 👤 **משתמש:** ${contact}
 🏷️ **סיווג:** ${result.classification}
@@ -451,7 +451,7 @@ class WhatsAppModerationBot {
             });
             
             // Acknowledge feedback
-            const ackMsg = `👍 **פידבק התקבל**
+            const ackMsg = `**פידבק התקבל**
 
 🆔 Review: ${reviewData.reviewId}
 📝 פעולה: ${this.getFeedbackDescription(reaction)}
@@ -688,7 +688,7 @@ if (require.main === module) {
     // Start the bot
     bot.start().catch(console.error);
     
-    // Graceful shutdown
+    // Shutdown
     process.on('SIGINT', async () => {
         console.log('\nShutting down');
         await bot.stop();
