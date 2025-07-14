@@ -1,6 +1,6 @@
 # WhatsApp Bot -סדרבוט אורות ברזל 
 
-בוט לקבוצות WhatsApp המשתמש בטכנולוגיית LLM מתקדמת לפיקוח הודעות בהתאם לתקנון ומחיקה אוטומטית של תוכן בעייתי
+בוט לקבוצת WhatsApp המשתמש ב LLM לפיקוח הודעות בהתאם לתקנון ומחיקה אוטומטית של תוכן בעייתי
 
 ## תכונות עיקריות
 
@@ -27,14 +27,12 @@
 ### שלב 1: הכנת סביבת העבודה
 
 ```bash
-# הרץ את סקריפט ההתקנה
 python setup_whatsapp.py
 ```
 
 ### שלב 2: הגדרת מפתח API
 
 ```bash
-# הגדר את מפתח GROQ API
 export GROQ_API_KEY='your_groq_api_key_here'
 ```
 
@@ -54,7 +52,6 @@ export GROQ_API_KEY='your_groq_api_key_here'
 ### שלב 4: הפעלת הבוט
 
 ```bash
-# הפעל את הבוט
 ./start_whatsapp_bot.sh
 ```
 
@@ -89,7 +86,7 @@ node whatsapp_bot.js
 
 ---
 
-## 🔧 אופן הפעולה
+## אופן הפעולה
 
 ### פעולות אוטומטיות
 
@@ -109,7 +106,7 @@ node whatsapp_bot.js
 | ⚠️ | מקרה מורכב | יועבר לדיון נוסף |
 | 🔄 | נתח מחדש | הסוכן יבדוק שוב |
 
-```
+
 
 ---
 
