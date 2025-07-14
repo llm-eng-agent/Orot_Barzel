@@ -51,7 +51,7 @@ class WhatsAppModerationBot {
         
         // Client ready
         this.client.on('ready', async () => {
-            console.log('✅ WhatsApp Bot Ready for action!!');
+            console.log('WhatsApp Bot Ready for action!!');
             await this.initializeGroup();
             await this.sendStartupMessage();
         });
@@ -78,13 +78,13 @@ class WhatsAppModerationBot {
         
         // Disconnection
         this.client.on('disconnected', (reason) => {
-            console.log('❌ WhatsApp Disconnected:', reason);
-            console.log('🔄 Trying to reconnect...');
+            console.log('WhatsApp Disconnected:', reason);
+            console.log('Trying to reconnect...');
         });
         
         // Authentication failure
         this.client.on('auth_failure', (msg) => {
-            console.error('❌ Authentication failure:', msg);
+            console.error('Authentication failure:', msg);
         });
     }
     
@@ -99,8 +99,8 @@ class WhatsAppModerationBot {
             
             if (targetGroup) {
                 this.targetGroupId = targetGroup.id._serialized;
-                console.log(`נמצאה קבוצת היעד: ${targetGroup.name}`);
-                console.log(`${targetGroup.participants.length} משתתפים בקבוצה`);
+                console.log(`Target group found:: ${targetGroup.name}`);
+                console.log(`${targetGroup.participants.length} participants in group`);
                 
                 // FIX: Collect ALL participants, not just admins
                 const participants = targetGroup.participants;
@@ -111,13 +111,13 @@ class WhatsAppModerationBot {
                     // Separately track admins
                     if (participant.isAdmin || participant.isSuperAdmin) {
                         this.adminIds.add(participant.id._serialized);
-                        console.log(`👤 Admin identified: ${participant.id.user}`);
+                        console.log(`Admin identified: ${participant.id.user}`);
                     } else {
-                        console.log(`👥 Member identified: ${participant.id.user}`);
+                        console.log(`Member identified: ${participant.id.user}`);
                     }
                 }
                 
-                console.log(`✅ identified ${this.allMembers.size} Members including ${this.adminIds.size} Admins`);
+                console.log(`identified ${this.allMembers.size} Members including ${this.adminIds.size} Admins`);
                 
                 // Debug: Print member counts
                 console.log(`Total Members: ${this.allMembers.size}`);
@@ -125,14 +125,14 @@ class WhatsAppModerationBot {
                 console.log(`Members: ${this.allMembers.size - this.adminIds.size}`);
                 
             } else {
-                console.log(`❌ No group found with the name"${this.targetGroupName}"`);
+                console.log(`No group found with the name"${this.targetGroupName}"`);
                 console.log('Availability groups:');
                 chats.filter(chat => chat.isGroup).forEach(chat => {
                     console.log(`  - ${chat.name}`);
                 });
             }
         } catch (error) {
-            console.error('❌ Error initializing group::', error);
+            console.error('Error initializing group::', error);
         }
     }
     
@@ -140,8 +140,8 @@ class WhatsAppModerationBot {
         if (this.adminIds.size > 0) {
             const startupMsg = `🤖 **סוכן חמ"ל פיקוח פעיל!**
 
-✅ מחובר לקבוצת: ${this.targetGroupName}
-👥 מפקח על ${this.allMembers.size} חברים (כולל ${this.adminIds.size} מנהלים)
+מחובר לקבוצת: ${this.targetGroupName}
+מפקח על ${this.allMembers.size} חברים (כולל ${this.adminIds.size} מנהלים)
 
 
 **איך זה עובד:**
@@ -178,7 +178,7 @@ class WhatsAppModerationBot {
         }
         
         // Log message details for debugging
-        console.log(`\n🔍 ניתוח הודעה חדשה מקבוצת אורות ברזל...`);
+        console.log(`\nAnalyzing new message from Orot Barzel group...`);
         console.log(`DEBUG: Message from group: ${message.from}`);
         console.log(`DEBUG: Target group: ${this.targetGroupId}`);
         console.log(`DEBUG: Sender: ${message.author || message.from}`);
@@ -192,17 +192,17 @@ class WhatsAppModerationBot {
         
         // Check if sender is a member (should include ALL members, not just admins)
         if (!this.allMembers.has(senderId) && !senderId.endsWith('@g.us')) {
-            console.log(`⚠️ הודעה ממשתמש לא מוכר: ${senderId}`);
+            console.log(`Message from unknown user ${senderId}`);
             // Still process the message but flag it
         }
         
-        console.log(`📨 הודעה חדשה מ-${senderId}: "${message.body?.substring(0, 50) || '[מדיה]'}..."`);
+        console.log(`New message from ${senderId}: "${message.body?.substring(0, 50) || '[מדיה]'}..."`);
         
         try {
             await this.processMessage(message);
         } catch (error) {
-            console.error('❌ שגיאה בעיבוד הודעה:', error);
-            await this.notifyAdmins(`❌ שגיאה בעיבוד הודעה מ-${senderId}: ${error.message}`);
+            console.error('Error processing message:', error);
+            await this.notifyAdmins(`Error processing message from: ${senderId}: ${error.message}`);
         }
     }
     
@@ -224,18 +224,18 @@ class WhatsAppModerationBot {
                 const media = await message.downloadMedia();
                 messageData.content = `[${media.mimetype}] ${message.body || 'קובץ מדיה'}`;
             } catch (error) {
-                console.log('❌ לא ניתן להוריד מדיה:', error.message);
+                console.log('Unavle to download media', error.message);
                 messageData.content = `[מדיה] ${message.body || 'קובץ מדיה'}`;
             }
         }
         
-        console.log(`🔍 שולח לניתוח: ${messageData.content.substring(0, 50)}...`);
+        console.log(`Sending for analysis: ${messageData.content.substring(0, 50)}...`);
         
         // Call Python moderation agent
         const result = await this.callModerationAgent(messageData);
         
         if (!result) {
-            console.log('❌ לא התקבלה תשובה מסוכן חמ"ל');
+            console.log('Unable to analyze message, defaulting to manual review');
             // Default to manual review for safety
             await this.flagForReview(message, {
                 classification: "TECHNICAL_ERROR",
@@ -246,7 +246,7 @@ class WhatsAppModerationBot {
             return;
         }
         
-        console.log(`תוצאת ניתוח: ${result.classification} (${(result.confidence * 100).toFixed(1)}%)`);
+        console.log(`Analysis result: ${result.classification} (${(result.confidence * 100).toFixed(1)}%)`);
         
         // Execute action based on result
         await this.executeAction(result, message, messageData);
@@ -280,12 +280,12 @@ class WhatsAppModerationBot {
                         const parsedResult = JSON.parse(result);
                         resolve(parsedResult);
                     } catch (e) {
-                        console.error('❌ JSON parsing error:', e);
+                        console.error('JSON parsing error:', e);
                         console.error('Python response:', result);
                         resolve(null);
                     }
                 } else {
-                    console.error('❌ Python process failed:', error);
+                    console.error('Python process failed:', error);
                     resolve(null);
                 }
             });
@@ -312,7 +312,7 @@ class WhatsAppModerationBot {
                 break;
                 
             case 'APPROVE':
-                console.log(`✅ Message approved: ${messageData.content.substring(0, 30)}...`);
+                console.log(`Message approved: ${messageData.content.substring(0, 30)}...`);
                 // Check if it's a media content warning
                 if (this.needsMediaWarning(messageData.content)) {
                     await this.sendMediaWarning(message);
@@ -320,7 +320,7 @@ class WhatsAppModerationBot {
                 break;
                 
             default:
-                console.log(`❓Unknown Action: ${result.action}`);
+                console.log(`Unknown Action: ${result.action}`);
         }
     }
     
@@ -388,7 +388,7 @@ class WhatsAppModerationBot {
 
         await this.notifyAdmins(reviewMsg);
         
-        console.log(`⚠️ הודעה סומנה לבדיקה: ${reviewId}`);
+        console.log(`Message flagged for review: ${reviewId}`);
     }
     
     async handleReaction(reaction) {
@@ -407,7 +407,7 @@ class WhatsAppModerationBot {
             }
             
             const reviewData = this.pendingReviews.get(messageId);
-            console.log(`👤 מנהל הגיב ${reactionEmoji} על review ${reviewData.reviewId}`);
+            console.log(`Admin reacted ${reactionEmoji} to review ${reviewData.reviewId}`);
             
             // Process the feedback
             await this.processFeedback(reviewData, reactionEmoji);
@@ -416,7 +416,7 @@ class WhatsAppModerationBot {
             this.pendingReviews.delete(messageId);
             
         } catch (error) {
-            console.error('❌ שגיאה בטיפול התגובה:', error);
+            console.error('Error handling reaction:', error);
         }
     }
     
@@ -430,7 +430,7 @@ class WhatsAppModerationBot {
         
         const feedbackType = feedbackMapping[reaction];
         if (!feedbackType) {
-            console.log(`❓ תגובה לא מוכרת: ${reaction}`);
+            console.log(`Unknown reaction: ${reaction}`);
             return;
         }
         
@@ -444,9 +444,9 @@ class WhatsAppModerationBot {
             
             feedbackProcess.on('close', (code) => {
                 if (code === 0) {
-                    console.log(`✅ פידבק נשלח בהצלחה: ${reaction}`);
+                    console.log(`Feedback sent successfully: ${reaction}`);
                 } else {
-                    console.error(`❌ שגיאה בשליחת פידבק: code ${code}`);
+                    console.error(`Error sending feedback: code ${code}`);
                 }
             });
             
@@ -462,7 +462,7 @@ class WhatsAppModerationBot {
             await this.notifyAdmins(ackMsg);
             
         } catch (error) {
-            console.error('❌ שגיאה בעיבוד פידבק:', error);
+            console.error('Error processing feedback:', error);
         }
     }
     
@@ -485,12 +485,12 @@ class WhatsAppModerationBot {
         const newMembers = notification.recipientIds;
         for (const memberId of newMembers) {
             this.allMembers.add(memberId._serialized);
-            console.log(`👥 חבר חדש נוסף למעקב: ${memberId.user}`);
+            console.log(`New member added to tracking: ${memberId.user}`);
         }
         
         const newMemberNames = newMembers.map(id => id.user);
         
-        const joinMsg = `👥 **חברים חדשים הצטרפו**
+        const joinMsg = `**חברים חדשים הצטרפו**
 
 🆕 חברים: ${newMemberNames.join(', ')}
 ⏰ זמן: ${new Date().toLocaleString('he-IL')}
@@ -504,7 +504,7 @@ class WhatsAppModerationBot {
 🤖 הבוט יתחיל לפקח על הודעותיהם`;
 
         await this.notifyAdmins(joinMsg);
-        console.log(`👥 חברים חדשים: ${newMemberNames.join(', ')}`);
+        console.log(`New members: ${newMemberNames.join(', ')}`);
     }
     
     // FIX: Add handler for members leaving
@@ -517,10 +517,10 @@ class WhatsAppModerationBot {
         for (const memberId of leftMembers) {
             this.allMembers.delete(memberId._serialized);
             this.adminIds.delete(memberId._serialized); // Remove from admins too if needed
-            console.log(`חבר הוסר ממעקב: ${memberId.user}`);
+            console.log(`Member removed from tracking: ${memberId.user}`);
         }
         
-        console.log(`חברים פעילים: ${this.allMembers.size}`);
+        console.log(`Active members ${this.allMembers.size}`);
     }
     
     needsMediaWarning(content) {
@@ -535,9 +535,9 @@ class WhatsAppModerationBot {
     async sendMediaWarning(message) {
         try {
             await message.reply('🔔 *תזכורת אוטומטית:*נא לשים לב לתוכן המדיה שמשותף ולמיקום הצילום');
-            console.log('נשלחה תזכורת מדיה');
+            console.log('Media warning sent successfully');
         } catch (error) {
-            console.error('❌ נכשל בשליחת תזכורת מדיה:', error);
+            console.error('Failed to send media warning:', error);
         }
     }
     
@@ -555,7 +555,7 @@ class WhatsAppModerationBot {
             try {
                 await this.client.sendMessage(adminId, message);
             } catch (error) {
-                console.error(`❌ נכשל בשליחה למנהל ${adminId}:`, error.message);
+                console.error(`נכשל בשליחה למנהל ${adminId}:`, error.message);
             }
         }
     }
@@ -611,7 +611,7 @@ class WhatsAppModerationBot {
     }
     
     async start() {
-        console.log('⬆️ Uploading WhatsApp Moderation Bot...');
+        console.log('⬆Uploading WhatsApp Moderation Bot...');
         await this.client.initialize();
         
         // Schedule daily report (every day at 08:00)
@@ -622,11 +622,11 @@ class WhatsAppModerationBot {
             }
         }, 60000); // Check every minute
         
-        console.log('📅 Daily update set to 20:00');
+        console.log('Daily update set to 20:00');
     }
     
     async stop() {
-        console.log('🛑Stopping WhatsApp Bot...');
+        console.log('Stopping WhatsApp Bot...');
         await this.client.destroy();
     }
     
@@ -644,7 +644,7 @@ class WhatsAppModerationBot {
                 description: group.description
             };
         } catch (error) {
-            console.error('❌ Error reciving info in the group:', error);
+            console.error('Error reciving info in the group:', error);
             return null;
         }
     }
@@ -668,11 +668,11 @@ class WhatsAppModerationBot {
                 }
             }
             
-            console.log(`🔄 Members list is up-to-date: ${this.allMembers.size} Friends, ${this.adminIds.size} Admins`);
+            console.log(`Members list is up-to-date: ${this.allMembers.size} Friends, ${this.adminIds.size} Admins`);
             return true;
             
         } catch (error) {
-            console.error('❌ Error refreshing members list:', error);
+            console.error('Error refreshing members list:', error);
             return false;
         }
     }
@@ -690,16 +690,16 @@ if (require.main === module) {
     
     // Graceful shutdown
     process.on('SIGINT', async () => {
-        console.log('\n🛑 Shutting down');
+        console.log('\nShutting down');
         await bot.stop();
         process.exit(0);
     });
     
     process.on('uncaughtException', (error) => {
-        console.error('❌ Unexpected error:', error);
+        console.error('Unexpected error:', error);
     });
     
     process.on('unhandledRejection', (reason, promise) => {
-        console.error('❌ Promise not handled:  :', reason);
+        console.error('Promise not handled:  :', reason);
     });
 }

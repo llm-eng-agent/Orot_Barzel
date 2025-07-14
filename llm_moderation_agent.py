@@ -427,17 +427,17 @@ def test_llm_agent():
         try:
             result = agent.process_message(case['id'], case['user_id'], case['content'])
             
-            print(f"🏷️  Classification: {result['classification']}")
-            print(f"📊 Confidence: {result['confidence']:.2f}")
-            print(f"⚡ Action: {result['action']}")
-            print(f"💭 Reasoning: {result['reasoning']}")
+            print(f"Classification: {result['classification']}")
+            print(f"Confidence: {result['confidence']:.2f}")
+            print(f"Action: {result['action']}")
+            print(f"Reasoning: {result['reasoning']}")
             
             # Simulate feedback
             if result['classification'] != case['expected']:
-                print(f"👤 Admin feedback: ❌ (Expected: {case['expected']})")
+                print(f"Admin feedback: ❌ (Expected: {case['expected']})")
                 agent.process_feedback(case['id'], '❌')
             else:
-                print(f"👤 Admin feedback: ✅")
+                print(f"Admin feedback: ")
                 agent.process_feedback(case['id'], '✅')
                 
         except Exception as e:
